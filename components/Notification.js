@@ -20,7 +20,9 @@ class Notification extends Component {
               <Title style={{ marginTop: -10, fontSize: 16 }}>
                 {this.props.title}
               </Title>
-              <Text>{this.props.notificationTime}</Text>
+              <Text style={{ fontSize: 12 }}>
+                {this.props.notificationTime}
+              </Text>
             </View>
             <Paragraph style={{ fontSize: 13 }}>
               {this.props.description}
