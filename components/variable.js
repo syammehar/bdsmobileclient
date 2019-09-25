@@ -1,2 +1,5 @@
-export const ApiUrl = "http://192.168.43.208:56280/api/";
-export const TokenUrl = "http://192.168.43.208:56280/token";
+const appIp = "39.50.110.108";
+const appPort = "8090";
+export const ApiUrl = "http://" + appIp + ":" + appPort + "/api/";
+export const TokenUrl = "http://" + appIp + ":" + appPort + "/token";
+export const BaseUrl = "http://" + appIp + ":" + appPort + "/";
