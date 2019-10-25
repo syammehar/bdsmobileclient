@@ -11,6 +11,8 @@ import {
   KeyboardAvoidingView
 } from "react-native";
 
+import ActionButton from "react-native-action-button";
+
 export default class HomeTab extends Component {
   static navigationOptions = {
     drawerLabel: "Home",
@@ -37,7 +39,7 @@ export default class HomeTab extends Component {
   };
   render() {
     return (
-      <View>
+      <View style={{ flex: 1 }}>
         <Text style={[Styles.title, Styles.BackgroundColor]}>Home</Text>
         <KeyboardAvoidingView behavior="position">
           <View style={styles.container}>
@@ -100,12 +102,43 @@ export default class HomeTab extends Component {
             </View>
           </View>
         </KeyboardAvoidingView>
+        <ActionButton
+          renderIcon={() => (
+            <Ionicons name="md-more" style={styles.actionButtonIcon} />
+          )}
+          buttonColor="rgba(231,76,60,1)"
+        >
+          <ActionButton.Item
+            buttonColor="#9b59b6"
+            title="Open Requests"
+            onPress={() => console.log("notes tapped!")}
+          >
+            <Ionicons name="md-heart-half" style={styles.actionButtonIcon} />
+          </ActionButton.Item>
+          <ActionButton.Item
+            buttonColor="#3498db"
+            title="Notifications"
+            onPress={() => {
+              this.props.navigation.navigate("Notifications");
+            }}
+          >
+            <Ionicons
+              name="md-notifications-off"
+              style={styles.actionButtonIcon}
+            />
+          </ActionButton.Item>
+        </ActionButton>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  actionButtonIcon: {
+    fontSize: 20,
+    height: 22,
+    color: "white"
+  },
   container: {
     padding: 20
   },
