@@ -3,6 +3,12 @@ import { AsyncStorage } from "react-native";
 import { RegisterNotificationToken } from "./RegisterNotificationToken";
 export function LoginService(data) {
   const url = TokenUrl;
+  data = {
+    username: data.username,
+    password: data.password,
+    grant_type: "password"
+  };
+  console.log(url, JSON.stringify(data));
   // const bodydata =
   //   "username=" +
   //   data.username +
@@ -13,7 +19,7 @@ export function LoginService(data) {
   let fetchData = {
     method: "POST",
     headers: {
-      "content-type": "text/plain;charset=UTF-8"
+      "content-type": "application/json"
     },
     body: JSON.stringify(data)
   };

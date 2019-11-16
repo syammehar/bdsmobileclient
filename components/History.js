@@ -1,13 +1,14 @@
 import React, { Component } from "react";
-import { Card, Title, Paragraph } from "react-native-paper";
+import { Card, Title, Paragraph, TouchableHighlight } from "react-native-paper";
 import { Text, View } from "react-native";
+import timeDifference from "./services/TimeService";
 
 class History extends Component {
   state = {};
   render() {
     return (
       <View style={{ marginTop: 2 }}>
-        <Card style={{ elevation: 5 }}>
+        <Card onPress={this.props.OpenModel} style={{ elevation: 5 }}>
           <Card.Content>
             <View
               style={{
@@ -15,11 +16,12 @@ class History extends Component {
                 justifyContent: "space-between"
               }}
             >
-              <Title style={{ marginTop: -10 }}>Heading</Title>
-              <Text>10:45 AM</Text>
+              <Title style={{ marginTop: -10 }}>
+                {this.props.HistoryItem.Title}
+              </Title>
+              <Text>{timeDifference(this.props.HistoryItem.Time)}</Text>
             </View>
-            <Paragraph>Description will be displayed here</Paragraph>
-            <Paragraph>short note</Paragraph>
+            <Paragraph>{this.props.HistoryItem.Description}</Paragraph>
           </Card.Content>
         </Card>
       </View>
@@ -28,3 +30,6 @@ class History extends Component {
 }
 
 export default History;
+
+// <TouchableHighlight onPress={console.log("pressed")}>
+// </TouchableHighlight>

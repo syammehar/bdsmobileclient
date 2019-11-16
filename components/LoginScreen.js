@@ -4,7 +4,7 @@ import { TextInput, Button } from "react-native-paper";
 import { LoginService } from "./services/LoginService";
 class LoginScreen extends Component {
   state = {
-    username: "mabp@g.c",
+    username: "map@g.c",
     password: "123",
     redirectToHome: false
   };
