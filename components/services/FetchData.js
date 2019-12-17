@@ -1,4 +1,4 @@
-import { ApiUrl } from "../variable.js";
+import { ApiUrl } from "../Constants";
 import { AsyncStorage } from "react-native";
 
 export async function FetchData(path) {

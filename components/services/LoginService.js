@@ -1,4 +1,4 @@
-import { TokenUrl } from "../variable.js";
+import { TokenUrl } from "../Constants";
 import { AsyncStorage } from "react-native";
 import { RegisterNotificationToken } from "./RegisterNotificationToken";
 export function LoginService(data) {
