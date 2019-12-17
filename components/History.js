@@ -4,11 +4,15 @@ import { Text, View } from "react-native";
 import timeDifference from "./services/TimeService";
 
 class History extends Component {
-  state = {};
+  state = { ID: this.props.HistoryItem.ID, type: this.props.HistoryItem.Type };
   render() {
     return (
       <View style={{ marginTop: 2 }}>
-        <Card onPress={this.props.OpenModel} style={{ elevation: 5 }}>
+        <Card
+          onPress={() => this.props.OpenModel(this.state.ID, this.state.type)}
+          //key={this.props.HistoryItem.ID + "_" + this.props.HistoryItem.type}
+          style={{ elevation: 5 }}
+        >
           <Card.Content>
             <View
               style={{

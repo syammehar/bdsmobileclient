@@ -5,13 +5,14 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  Modal,
   TouchableHighlight,
   Alert
 } from "react-native";
+import Modal from "react-native-modal";
 import Styles from "./Styles";
-import { RadioButton } from "react-native-paper";
+import { RadioButton, Button } from "react-native-paper";
 import History from "./History";
+import HistoryItemDetail from "./HistoryItemDetail";
 import Preloader from "./Preloader";
 import { FetchData } from "./services/FetchData";
 
@@ -24,10 +25,15 @@ class HistoryTab extends Component {
     refreshing: false,
     itemFilterText: "all",
     History: null,
-    modalVisible: false
+    modalVisible: false,
+    url: ""
   };
-  openModel = () => {
-    this.setState({ modalVisible: true });
+  openModel = (id, type) => {
+    //console.log("DATA TO SHOWN", id, type);
+    this.setState({
+      modalVisible: true,
+      url: "history?type=" + type + "&id=" + id
+    });
   };
   componentDidMount() {
     this.getHistory();
@@ -45,6 +51,7 @@ class HistoryTab extends Component {
       });
   };
   _onRefresh = () => {
+    console.log("_onRefresh()");
     this.getHistory();
   };
   render() {
@@ -54,7 +61,6 @@ class HistoryTab extends Component {
     //console.log(this.state.History);
     let filteredData = this.state.History.filter(element => {
       if (this.state.itemFilterText === "all") {
-        console.log(element);
         return true;
       } else return element.Type.indexOf(this.state.itemFilterText) >= 0;
     }).map(element => {
@@ -62,25 +68,10 @@ class HistoryTab extends Component {
         <History
           key={this.state.History.indexOf(element)}
           HistoryItem={element}
-          OpenModel={this.openModel}
+          OpenModel={(id, type) => this.openModel(id, type)}
         ></History>
-        // <MDBListGroupItem key={this.state.History.indexOf(element)} hover>
-        //   <div className="d-flex w-100 justify-content-between">
-        //     <h5 className="mb-1">{element.Title}</h5>
-        //     <small className="text-muted">{timeDifference(element.Time)}</small>
-        //   </div>
-        //   <a
-        //     onClick={this.ItemClicked}
-        //     name={element.ID}
-        //     className={element.Type}
-        //   >
-        //     {element.Description}
-        //   </a>
-        //   <span className="sr-only" name={element.Type} />
-        // </MDBListGroupItem>
       );
     });
-    //{ 1: "all", 2: "req", 3: "acp", 4: "don" }
     return (
       <View>
         <Text style={[Styles.title, Styles.BackgroundColor]}>History</Text>
@@ -95,7 +86,11 @@ class HistoryTab extends Component {
         >
           <RadioButton
             value="All"
-            onPress={() => this.setState({ itemFilterText: "all" })}
+            onPress={() => {
+              this.setState({ itemFilterText: "all" });
+              console.log("all Click");
+            }}
+            on
             status={
               this.state.itemFilterText === "all" ? "checked" : "unchecked"
             }
@@ -146,32 +141,46 @@ class HistoryTab extends Component {
             Donnations
           </Text>
         </View>
-        <ScrollView style={{ marginBottom: 60 }}>
+
+        <ScrollView style={{ marginBottom: 100 }}>
           <View>{filteredData}</View>
         </ScrollView>
-        <Modal
-          style={{ width: "80%", height: "50%" }}
-          animationType="slide"
-          transparent={false}
-          visible={this.state.modalVisible}
-          onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
-          }}
-        >
-          <View style={{ marginTop: 22 }}>
-            <View>
-              <Text>Hello World!</Text>
 
-              <TouchableHighlight
-                onPress={() => {
-                  this.setState({ modalVisible: false });
+        <View>
+          <Modal
+            visible={this.state.modalVisible}
+            onRequestClose={this._hideModal}
+          >
+            <View
+              style={{
+                backgroundColor: "gray",
+                padding: 30,
+                borderRadius: 10,
+                height: "auto"
+              }}
+            >
+              <Text style={{ marginBottom: 10, fontSize: 20 }}>Details</Text>
+              <HistoryItemDetail url={this.state.url}></HistoryItemDetail>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "flex-end",
+                  marginTop: 20
                 }}
               >
-                <Text>Hide Modal</Text>
-              </TouchableHighlight>
+                <Button
+                  style={[Styles.BackgroundColor, { marginLeft: 20 }]}
+                  mode="contained"
+                  onPress={() => {
+                    this.setState({ modalVisible: false });
+                  }}
+                >
+                  Ok
+                </Button>
+              </View>
             </View>
-          </View>
-        </Modal>
+          </Modal>
+        </View>
       </View>
     );
   }
@@ -185,3 +194,42 @@ const styles = StyleSheet.create({
 });
 
 export default HistoryTab;
+{
+  /* <Modal
+          style={{ width: "80%", height: "50%" }}
+          animationType="slide"
+          transparent={true}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {
+            Alert.alert("Modal has been closed.");
+          }}
+        >
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "rgba(0,0,0,0.5)"
+            }}
+          >
+            <View
+              style={{
+                width: 300,
+                height: 300,
+                backgroundColor: "white"
+              }}
+            >
+              <Text>Hello World!</Text>
+              <TouchableHighlight
+                onPress={() => {
+                  this.setState({ modalVisible: false });
+                }}
+              >
+                <Text>Hide Modal</Text>
+              </TouchableHighlight>
+            </View>
+          </View>
+        </Modal>
+       */
+}

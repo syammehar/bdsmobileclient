@@ -34,16 +34,20 @@ export function LoginService(data) {
     fetch(url, fetchData)
       .then(res => {
         if (res.status !== 200)
-          throw new Error("Something went wrong Error: " + res.statusText);
+          throw new Error("Something went wrong Error: " + res.status);
         return res.json();
       })
       .then(function(data) {
         if (data.error) throw new Error(data.error_description);
-        this._storeData("access_token", data.access_token);
-        this._storeData("expires_in", data.expires_in);
-        this._storeData("token_type", data.token_type);
-        RegisterNotificationToken();
-        resolve(true);
+        try {
+          this._storeData("access_token", data.access_token);
+          this._storeData("expires_in", data.expires_in);
+          this._storeData("token_type", data.token_type);
+          RegisterNotificationToken();
+          resolve(true);
+        } catch {
+          throw new Error("Something went wrong");
+        }
         //access_token , expires_in , token_type
       })
       .catch(error => {

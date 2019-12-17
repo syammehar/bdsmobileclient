@@ -3,6 +3,7 @@ import { TextInput, Button } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
 import Styles from "./Styles";
 import { PostData } from "./services/PostData.js";
+import { FetchData } from "./services/FetchData";
 import {
   View,
   Text,
@@ -10,7 +11,8 @@ import {
   Picker,
   KeyboardAvoidingView
 } from "react-native";
-
+import ActiveRequests from "./ActiveRequests";
+import Modal from "react-native-modal";
 import ActionButton from "react-native-action-button";
 
 export default class HomeTab extends Component {
@@ -21,8 +23,33 @@ export default class HomeTab extends Component {
   state = {
     BloodGroup: 0,
     Location: "",
-    Description: ""
+    Description: "",
+    modalVisible: false,
+    RequestDetail:null,
+    RequestID:null,
+    DetailModal:false
   };
+  
+  OpenDetailModel=(id) =>{
+    FetchData("Requests/d?id=" + id)
+      .then(result => {
+        this.setState({ RequestDetail: result,RequestID: id,DetailModal:true });
+      })
+      .catch(errorMessage => {
+        console.log(errorMessage);
+      });
+  }
+  AcceptConfirmed=()=> {
+    let data={RequestID:this.state.RequestID};
+    PostData("Accepts", data)
+      .then(data => {
+        alert(data);
+        this.setState({DetailModal:false,
+    modalVisible: false})
+      })
+      .catch(errorMessage => {
+      });
+  }
   sendRequest = () => {
     PostData("requests", this.state)
       .then(data => {
@@ -38,6 +65,61 @@ export default class HomeTab extends Component {
       });
   };
   render() {
+let requestDetail=<View/>
+     if(this.state.RequestDetail){
+       requestDetail=(<View
+              style={{
+                backgroundColor: "gray",
+                padding: 20,
+                borderRadius: 10
+              }}
+            >
+              <Text style={{ marginBottom: 10, fontSize: 20 }}>
+                Request
+              </Text>
+              
+              <View
+                style={{
+                  marginTop: 5
+                }}
+              >
+              <View>
+              <Text style={{ marginBottom: 10, fontSize: 12 }}>
+                {this.state.RequestDetail.Detail}
+              </Text>
+              <Text style={{ marginBottom: 10, fontSize:12 }}>
+              {
+                this.state.RequestDetail.Message?"and saying \""+this.state.RequestDetail.Message+"\"":""
+              }
+              </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "flex-end",
+                  marginTop: 5
+                }}
+              >
+                <Button
+                  style={[Styles.BackgroundColor, { marginLeft: 20 }]}
+                  mode="contained"
+                  onPress={() => {
+                    this.setState({ DetailModal: false });
+                  }}
+                >
+                  No
+                </Button>
+                <Button
+                  style={[Styles.BackgroundColor, { marginLeft: 20 }]}
+                  mode="contained"
+                  onPress={this.AcceptConfirmed}
+                >
+                  Yes I'm
+                </Button>
+              </View>
+              </View>
+            </View>)
+      }
     return (
       <View style={{ flex: 1 }}>
         <Text style={[Styles.title, Styles.BackgroundColor]}>Home</Text>
@@ -111,7 +193,7 @@ export default class HomeTab extends Component {
           <ActionButton.Item
             buttonColor="#9b59b6"
             title="Open Requests"
-            onPress={() => console.log("notes tapped!")}
+            onPress={() => this.setState({ modalVisible: true })}
           >
             <Ionicons name="md-heart-half" style={styles.actionButtonIcon} />
           </ActionButton.Item>
@@ -128,6 +210,48 @@ export default class HomeTab extends Component {
             />
           </ActionButton.Item>
         </ActionButton>
+        <View>
+          <Modal
+            visible={this.state.modalVisible}
+            //onRequestClose={this._hideModal}
+          >
+            <View
+              style={{
+                backgroundColor: "gray",
+                padding: 20,
+                borderRadius: 10
+              }}
+            >
+              <Text style={{ marginBottom: 10, fontSize: 20 }}>
+                Active Requests
+              </Text>
+              <ActiveRequests OpenDetailModel={(id)=>this.OpenDetailModel(id)} />
+              {/*  */}
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "flex-end",
+                  marginTop: 5
+                }}
+              >
+                <Button
+                  style={[Styles.BackgroundColor, { marginLeft: 20 }]}
+                  mode="contained"
+                  onPress={() => {
+                    this.setState({ modalVisible: false });
+                  }}
+                >
+                  Close
+                </Button>
+              </View>
+            </View>
+          </Modal>
+         <Modal
+            visible={this.state.DetailModal}
+          >
+            {requestDetail}
+          </Modal>
+        </View>
       </View>
     );
   }

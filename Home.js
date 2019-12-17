@@ -6,7 +6,7 @@ import {
   createDrawerNavigator
 } from "react-navigation";
 import HomeTab from "./components/HomeTab";
-import UpdatesTab from "./components/UpdatesTab";
+import NotificationsTab from "./components/NotificationsTab";
 import HistoryTab from "./components/HistoryTab";
 import ProfileTab from "./components/ProfileTab";
 import SettingsTab from "./components/SettingsTab";
@@ -14,8 +14,8 @@ import Styles from "./components/Styles";
 
 const DrawerNavigator = createDrawerNavigator({
   Home: HomeTab,
-  Updates: UpdatesTab,
   History: HistoryTab,
+  Notifications: NotificationsTab,
   Profile: ProfileTab,
   Settings: SettingsTab
 });

@@ -3,6 +3,7 @@ import { AsyncStorage } from "react-native";
 
 export async function PostData(path, data) {
   const url = ApiUrl + path;
+  console.log(url);
   let fetchData = {
     method: "POST",
     headers: {
@@ -15,11 +16,12 @@ export async function PostData(path, data) {
   return new Promise((resolve, reject) => {
     fetch(url, fetchData)
       .then(res => {
-        if (res.status !== 200)
-          throw new Error("Something went wrong Error: " + res.statusText);
-        return res.json();
+        if (res.status === 200 || res.status === 400) return res.json();
+
+        throw new Error("Something went wrong Error: " + res.status);
       })
       .then(function(data) {
+        console.log(data);
         if (data.error) throw new Error(data.error_description);
         resolve(data.message);
       })

@@ -2,23 +2,22 @@ import React, { Component } from "react";
 import { View, Text, StyleSheet, AsyncStorage } from "react-native";
 import { TextInput, Button } from "react-native-paper";
 import { LoginService } from "./services/LoginService";
+import Styles from "./Styles";
 class LoginScreen extends Component {
   state = {
-    username: "man@g.c",
+    username: "map@g.c",
     password: "123",
     redirectToHome: false
   };
   handleLogin = () => {
     LoginService(this.state)
       .then(async result => {
-        console.log(result);
-        console.log(await AsyncStorage.getItem("access_token"));
         result === true
           ? this.props.navigation.navigate("DefaultHome")
-          : console.log("Navigate nai hoyaaaa");
+          : alert("Login Error");
       })
       .catch(errorMessage => {
-        console.log(errorMessage);
+        alert(errorMessage);
       });
   };
   componentDidMount() {
@@ -39,7 +38,11 @@ class LoginScreen extends Component {
             value={this.state.password}
             onChangeText={password => this.setState({ password })}
           />
-          <Button mode="contained" onPress={this.handleLogin}>
+          <Button
+            mode="contained"
+            onPress={this.handleLogin}
+            style={{ marginTop: 20, ...Styles.BackgroundColor }}
+          >
             Login
           </Button>
         </View>
