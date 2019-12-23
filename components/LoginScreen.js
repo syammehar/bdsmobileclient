@@ -6,7 +6,7 @@ import Styles from "./Styles";
 class LoginScreen extends Component {
   state = {
     username: "map@g.c",
-    password: "123",
+    password: "123456",
     redirectToHome: false
   };
   handleLogin = () => {
@@ -34,6 +34,7 @@ class LoginScreen extends Component {
             onChangeText={username => this.setState({ username })}
           />
           <TextInput
+            secureTextEntry={true}
             label="Password"
             value={this.state.password}
             onChangeText={password => this.setState({ password })}

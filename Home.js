@@ -11,6 +11,7 @@ import HistoryTab from "./components/HistoryTab";
 import ProfileTab from "./components/ProfileTab";
 import SettingsTab from "./components/SettingsTab";
 import Styles from "./components/Styles";
+import UpdateCredentials from "./components/UpdateCredentials";
 
 const DrawerNavigator = createDrawerNavigator({
   Home: HomeTab,

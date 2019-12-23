@@ -8,7 +8,6 @@ export function LoginService(data) {
     password: data.password,
     grant_type: "password"
   };
-  console.log(url, JSON.stringify(data));
   // const bodydata =
   //   "username=" +
   //   data.username +

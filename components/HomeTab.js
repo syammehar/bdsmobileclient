@@ -25,35 +25,37 @@ export default class HomeTab extends Component {
     Location: "",
     Description: "",
     modalVisible: false,
-    RequestDetail:null,
-    RequestID:null,
-    DetailModal:false
+    RequestDetail: null,
+    RequestID: null,
+    DetailModal: false
   };
-  
-  OpenDetailModel=(id) =>{
+
+  OpenDetailModel = id => {
     FetchData("Requests/d?id=" + id)
       .then(result => {
-        this.setState({ RequestDetail: result,RequestID: id,DetailModal:true });
+        this.setState({
+          RequestDetail: result,
+          RequestID: id,
+          DetailModal: true
+        });
       })
       .catch(errorMessage => {
         console.log(errorMessage);
       });
-  }
-  AcceptConfirmed=()=> {
-    let data={RequestID:this.state.RequestID};
+  };
+  AcceptConfirmed = () => {
+    let data = { RequestID: this.state.RequestID };
     PostData("Accepts", data)
       .then(data => {
-        alert(data);
-        this.setState({DetailModal:false,
-    modalVisible: false})
+        alert(data.message);
+        this.setState({ DetailModal: false, modalVisible: false });
       })
-      .catch(errorMessage => {
-      });
-  }
+      .catch(errorMessage => {});
+  };
   sendRequest = () => {
     PostData("requests", this.state)
       .then(data => {
-        alert(data);
+        alert(data.message);
         this.setState({
           BloodGroup: 0,
           Location: "",
@@ -65,61 +67,61 @@ export default class HomeTab extends Component {
       });
   };
   render() {
-let requestDetail=<View/>
-     if(this.state.RequestDetail){
-       requestDetail=(<View
-              style={{
-                backgroundColor: "gray",
-                padding: 20,
-                borderRadius: 10
-              }}
-            >
-              <Text style={{ marginBottom: 10, fontSize: 20 }}>
-                Request
-              </Text>
-              
-              <View
-                style={{
-                  marginTop: 5
-                }}
-              >
-              <View>
+    let requestDetail = <View />;
+    if (this.state.RequestDetail) {
+      requestDetail = (
+        <View
+          style={{
+            backgroundColor: "gray",
+            padding: 20,
+            borderRadius: 10
+          }}
+        >
+          <Text style={{ marginBottom: 10, fontSize: 20 }}>Request</Text>
+
+          <View
+            style={{
+              marginTop: 5
+            }}
+          >
+            <View>
               <Text style={{ marginBottom: 10, fontSize: 12 }}>
                 {this.state.RequestDetail.Detail}
               </Text>
-              <Text style={{ marginBottom: 10, fontSize:12 }}>
-              {
-                this.state.RequestDetail.Message?"and saying \""+this.state.RequestDetail.Message+"\"":""
-              }
+              <Text style={{ marginBottom: 10, fontSize: 12 }}>
+                {this.state.RequestDetail.Message
+                  ? 'and saying "' + this.state.RequestDetail.Message + '"'
+                  : ""}
               </Text>
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "flex-end",
-                  marginTop: 5
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "flex-end",
+                marginTop: 5
+              }}
+            >
+              <Button
+                style={[Styles.BackgroundColor, { marginLeft: 20 }]}
+                mode="contained"
+                onPress={() => {
+                  this.setState({ DetailModal: false });
                 }}
               >
-                <Button
-                  style={[Styles.BackgroundColor, { marginLeft: 20 }]}
-                  mode="contained"
-                  onPress={() => {
-                    this.setState({ DetailModal: false });
-                  }}
-                >
-                  No
-                </Button>
-                <Button
-                  style={[Styles.BackgroundColor, { marginLeft: 20 }]}
-                  mode="contained"
-                  onPress={this.AcceptConfirmed}
-                >
-                  Yes I'm
-                </Button>
-              </View>
-              </View>
-            </View>)
-      }
+                No
+              </Button>
+              <Button
+                style={[Styles.BackgroundColor, { marginLeft: 20 }]}
+                mode="contained"
+                onPress={this.AcceptConfirmed}
+              >
+                Yes I'm
+              </Button>
+            </View>
+          </View>
+        </View>
+      );
+    }
     return (
       <View style={{ flex: 1 }}>
         <Text style={[Styles.title, Styles.BackgroundColor]}>Home</Text>
@@ -225,7 +227,9 @@ let requestDetail=<View/>
               <Text style={{ marginBottom: 10, fontSize: 20 }}>
                 Active Requests
               </Text>
-              <ActiveRequests OpenDetailModel={(id)=>this.OpenDetailModel(id)} />
+              <ActiveRequests
+                OpenDetailModel={id => this.OpenDetailModel(id)}
+              />
               {/*  */}
               <View
                 style={{
@@ -246,11 +250,7 @@ let requestDetail=<View/>
               </View>
             </View>
           </Modal>
-         <Modal
-            visible={this.state.DetailModal}
-          >
-            {requestDetail}
-          </Modal>
+          <Modal visible={this.state.DetailModal}>{requestDetail}</Modal>
         </View>
       </View>
     );

@@ -23,7 +23,7 @@ export async function PostData(path, data) {
       .then(function(data) {
         console.log(data);
         if (data.error) throw new Error(data.error_description);
-        resolve(data.message);
+        resolve(data);
       })
       .catch(error => {
         reject(error.message);
