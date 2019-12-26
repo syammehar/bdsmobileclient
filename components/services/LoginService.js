@@ -43,14 +43,18 @@ export function LoginService(data) {
           this._storeData("expires_in", data.expires_in);
           this._storeData("token_type", data.token_type);
           RegisterNotificationToken();
-          resolve(true);
+          setTimeout(() => {
+            resolve(true);
+          }, 2000);
         } catch {
           throw new Error("Something went wrong");
         }
         //access_token , expires_in , token_type
       })
       .catch(error => {
-        reject(error.message);
+        setTimeout(() => {
+          reject(error.message);
+        }, 1000);
       });
   });
 }

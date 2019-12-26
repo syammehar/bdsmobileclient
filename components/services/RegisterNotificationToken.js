@@ -8,7 +8,6 @@ export async function RegisterNotificationToken() {
     return;
   }
   let value = await Notifications.getExpoPushTokenAsync();
-  console.log("Our token", value);
   PostData("notificationToken", { Token: value });
   // .then(data => {
   //   alert(data);
