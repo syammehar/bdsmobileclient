@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import { View, Text, Image, ScrollView, StyleSheet } from "react-native";
 import { Ionicons, Octicons, Entypo } from "@expo/vector-icons";
-import Modal from "react-native-modal";
+import ModalLayout from "./ModalLayout";
 import { List, TextInput, Button } from "react-native-paper";
 import Styles from "./Styles";
 import { PostData } from "./services/PostData.js";
 import { FetchData } from "./services/FetchData";
+import Spinner from "./Spinner";
 
 class SettingsTab extends Component {
   static navigationOptions = {
@@ -18,7 +19,8 @@ class SettingsTab extends Component {
     RepeatPassword: "",
     Contact: "",
     Email: "",
-    modalVisible: false
+    modalVisible: false,
+    ShowSpinner: false
   };
   PerformUpdate = () => {
     let NewPassword = this.state.NewPassword;
@@ -43,12 +45,15 @@ class SettingsTab extends Component {
       }
       return;
     }
+    this.ShowSpinner();
     PostData("ProfileUpdate", this.state)
       .then(data => {
+        this.HideSpinner();
         alert("Credentials Updated Successfully...");
         this.setState({ ...data, modalVisible: false });
       })
       .catch(errorMessage => {
+        this.HideSpinner();
         alert(errorMessage);
       });
   };
@@ -76,92 +81,84 @@ class SettingsTab extends Component {
             left={() => <Entypo name="shield" size={26} style={styles.icon} />}
           />
         </View>
-        <Modal visible={this.state.modalVisible}>
+        <ModalLayout visible={this.state.modalVisible}>
+          <Text style={{ marginBottom: 10, fontSize: 20 }}>
+            Update Credentials
+          </Text>
+
+          <ScrollView style={{ marginBottom: 10, maxHeight: "80%" }}>
+            <View>
+              <TextInput
+                maxLength={100}
+                secureTextEntry={true}
+                label="Old Password"
+                style={{ borderRadius: 5 }}
+                value={this.state.OldPassword}
+                onChangeText={OldPassword => this.setState({ OldPassword })}
+              />
+              <TextInput
+                maxLength={100}
+                secureTextEntry={true}
+                label="New Password"
+                style={{ borderRadius: 5, marginTop: 20 }}
+                value={this.state.NewPassword}
+                onChangeText={NewPassword => this.setState({ NewPassword })}
+              />
+              <TextInput
+                maxLength={100}
+                secureTextEntry={true}
+                label="Repeat Password"
+                style={{ borderRadius: 5, marginTop: 20 }}
+                value={this.state.RepeatPassword}
+                onChangeText={RepeatPassword =>
+                  this.setState({ RepeatPassword })
+                }
+              />
+              {this.LineSeparator()}
+              <TextInput
+                maxLength={100}
+                label="Email"
+                style={{ borderRadius: 5, marginTop: 20 }}
+                value={this.state.Email}
+                onChangeText={Email => this.setState({ Email })}
+              />
+              {this.LineSeparator()}
+              <TextInput
+                maxLength={100}
+                label="Contact"
+                style={{ borderRadius: 5, marginTop: 20 }}
+                value={this.state.Contact}
+                onChangeText={Contact => this.setState({ Contact })}
+              />
+            </View>
+          </ScrollView>
+
           <View
             style={{
-              backgroundColor: "gray",
-              padding: 20,
-              borderRadius: 10
+              flexDirection: "row",
+              justifyContent: "flex-end",
+              marginTop: 5
             }}
           >
-            <Text style={{ marginBottom: 10, fontSize: 20 }}>
-              Update Credentials
-            </Text>
-
-            <ScrollView style={{ marginBottom: 10, maxHeight: "80%" }}>
-              <View>
-                <TextInput
-                  maxLength={100}
-                  secureTextEntry={true}
-                  label="Old Password"
-                  style={{ borderRadius: 5 }}
-                  defaultValue={this.state.OldPassword}
-                  onChangeText={OldPassword => this.setState({ OldPassword })}
-                />
-                <TextInput
-                  maxLength={100}
-                  secureTextEntry={true}
-                  label="New Password"
-                  style={{ borderRadius: 5, marginTop: 20 }}
-                  defaultValue={this.state.NewPassword}
-                  onChangeText={NewPassword => this.setState({ NewPassword })}
-                />
-                <TextInput
-                  maxLength={100}
-                  secureTextEntry={true}
-                  label="Repeat Password"
-                  style={{ borderRadius: 5, marginTop: 20 }}
-                  defaultValue={this.state.RepeatPassword}
-                  onChangeText={RepeatPassword =>
-                    this.setState({ RepeatPassword })
-                  }
-                />
-                {this.LineSeparator()}
-                <TextInput
-                  maxLength={100}
-                  label="Email"
-                  style={{ borderRadius: 5, marginTop: 20 }}
-                  defaultValue={this.state.Email}
-                  onChangeText={Email => this.setState({ Email })}
-                />
-                {this.LineSeparator()}
-                <TextInput
-                  maxLength={100}
-                  label="Contact"
-                  style={{ borderRadius: 5, marginTop: 20 }}
-                  defaultValue={this.state.Contact}
-                  onChangeText={Contact => this.setState({ Contact })}
-                />
-              </View>
-            </ScrollView>
-
-            {/* */}
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "flex-end",
-                marginTop: 5
+            <Button
+              style={[Styles.BackgroundColor, { marginLeft: 20 }]}
+              mode="contained"
+              onPress={this.PerformUpdate}
+            >
+              Save
+            </Button>
+            <Button
+              style={{ marginLeft: 20, backgroundColor: "yellow" }}
+              mode="contained"
+              onPress={() => {
+                this.setState({ modalVisible: false });
               }}
             >
-              <Button
-                style={[Styles.BackgroundColor, { marginLeft: 20 }]}
-                mode="contained"
-                onPress={this.PerformUpdate}
-              >
-                Save
-              </Button>
-              <Button
-                style={[Styles.BackgroundColor, { marginLeft: 20 }]}
-                mode="contained"
-                onPress={() => {
-                  this.setState({ modalVisible: false });
-                }}
-              >
-                Cancel
-              </Button>
-            </View>
+              Cancel
+            </Button>
           </View>
-        </Modal>
+        </ModalLayout>
+        <Spinner visible={this.state.ShowSpinner}></Spinner>
       </View>
     );
   }
@@ -174,6 +171,13 @@ class SettingsTab extends Component {
       }}
     />
   );
+
+  ShowSpinner = () => {
+    this.setState({ ShowSpinner: true });
+  };
+  HideSpinner = () => {
+    this.setState({ ShowSpinner: false });
+  };
 }
 
 export default SettingsTab;

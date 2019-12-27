@@ -45,7 +45,7 @@ export function LoginService(data) {
           RegisterNotificationToken();
           setTimeout(() => {
             resolve(true);
-          }, 2000);
+          }, 500);
         } catch {
           throw new Error("Something went wrong");
         }
@@ -54,7 +54,7 @@ export function LoginService(data) {
       .catch(error => {
         setTimeout(() => {
           reject(error.message);
-        }, 1000);
+        }, 500);
       });
   });
 }

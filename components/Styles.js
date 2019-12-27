@@ -16,3 +16,9 @@ export default StyleSheet.create({
     color: "#f4511e"
   }
 });
+
+export const Colors = {
+  Danger: "reg",
+  Success: "green",
+  Warning: "yellow"
+};

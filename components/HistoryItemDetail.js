@@ -12,8 +12,8 @@ import Modal from "react-native-modal";
 import Styles from "./Styles";
 import { RadioButton, Button } from "react-native-paper";
 import History from "./History";
-import Preloader from "./Preloader";
 import { FetchData } from "./services/FetchData";
+
 class HistoryItemDetail extends Component {
   constructor(props, context) {
     super(props, context);

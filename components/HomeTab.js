@@ -12,8 +12,9 @@ import {
   KeyboardAvoidingView
 } from "react-native";
 import ActiveRequests from "./ActiveRequests";
-import Modal from "react-native-modal";
+import ModalLayout from "./ModalLayout";
 import ActionButton from "react-native-action-button";
+import Spinner from "./Spinner";
 
 export default class HomeTab extends Component {
   static navigationOptions = {
@@ -27,10 +28,12 @@ export default class HomeTab extends Component {
     modalVisible: false,
     RequestDetail: null,
     RequestID: null,
-    DetailModal: false
+    DetailModal: false,
+    ShowSpinner: false
   };
 
   OpenDetailModel = id => {
+    this.ShowSpinner();
     FetchData("Requests/d?id=" + id)
       .then(result => {
         this.setState({
@@ -38,23 +41,31 @@ export default class HomeTab extends Component {
           RequestID: id,
           DetailModal: true
         });
+        this.HideSpinner();
       })
       .catch(errorMessage => {
+        this.HideSpinner();
         console.log(errorMessage);
       });
   };
   AcceptConfirmed = () => {
     let data = { RequestID: this.state.RequestID };
+    this.ShowSpinner();
     PostData("Accepts", data)
       .then(data => {
+        this.HideSpinner();
         alert(data.message);
         this.setState({ DetailModal: false, modalVisible: false });
       })
-      .catch(errorMessage => {});
+      .catch(errorMessage => {
+        this.HideSpinner();
+      });
   };
   sendRequest = () => {
+    this.ShowSpinner();
     PostData("requests", this.state)
       .then(data => {
+        this.HideSpinner();
         alert(data.message);
         this.setState({
           BloodGroup: 0,
@@ -63,6 +74,7 @@ export default class HomeTab extends Component {
         });
       })
       .catch(errorMessage => {
+        this.HideSpinner();
         alert(errorMessage);
       });
   };
@@ -70,13 +82,7 @@ export default class HomeTab extends Component {
     let requestDetail = <View />;
     if (this.state.RequestDetail) {
       requestDetail = (
-        <View
-          style={{
-            backgroundColor: "gray",
-            padding: 20,
-            borderRadius: 10
-          }}
-        >
+        <View>
           <Text style={{ marginBottom: 10, fontSize: 20 }}>Request</Text>
 
           <View
@@ -93,6 +99,7 @@ export default class HomeTab extends Component {
                   ? 'and saying "' + this.state.RequestDetail.Message + '"'
                   : ""}
               </Text>
+              <Text>Are you willing to Donate?</Text>
             </View>
             <View
               style={{
@@ -102,6 +109,13 @@ export default class HomeTab extends Component {
               }}
             >
               <Button
+                style={{ marginLeft: 20, backgroundColor: "green" }}
+                mode="contained"
+                onPress={this.AcceptConfirmed}
+              >
+                Yes I'm
+              </Button>
+              <Button
                 style={[Styles.BackgroundColor, { marginLeft: 20 }]}
                 mode="contained"
                 onPress={() => {
@@ -109,13 +123,6 @@ export default class HomeTab extends Component {
                 }}
               >
                 No
-              </Button>
-              <Button
-                style={[Styles.BackgroundColor, { marginLeft: 20 }]}
-                mode="contained"
-                onPress={this.AcceptConfirmed}
-              >
-                Yes I'm
               </Button>
             </View>
           </View>
@@ -213,48 +220,45 @@ export default class HomeTab extends Component {
           </ActionButton.Item>
         </ActionButton>
         <View>
-          <Modal
-            visible={this.state.modalVisible}
-            //onRequestClose={this._hideModal}
-          >
+          <ModalLayout visible={this.state.modalVisible}>
+            <Text style={{ marginBottom: 10, fontSize: 20 }}>
+              Active Requests
+            </Text>
+            <ActiveRequests OpenDetailModel={id => this.OpenDetailModel(id)} />
+            {/*  */}
             <View
               style={{
-                backgroundColor: "gray",
-                padding: 20,
-                borderRadius: 10
+                flexDirection: "row",
+                justifyContent: "flex-end",
+                marginTop: 5
               }}
             >
-              <Text style={{ marginBottom: 10, fontSize: 20 }}>
-                Active Requests
-              </Text>
-              <ActiveRequests
-                OpenDetailModel={id => this.OpenDetailModel(id)}
-              />
-              {/*  */}
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "flex-end",
-                  marginTop: 5
+              <Button
+                style={[Styles.BackgroundColor, { marginLeft: 20 }]}
+                mode="contained"
+                onPress={() => {
+                  this.setState({ modalVisible: false });
                 }}
               >
-                <Button
-                  style={[Styles.BackgroundColor, { marginLeft: 20 }]}
-                  mode="contained"
-                  onPress={() => {
-                    this.setState({ modalVisible: false });
-                  }}
-                >
-                  Close
-                </Button>
-              </View>
+                Close
+              </Button>
             </View>
-          </Modal>
-          <Modal visible={this.state.DetailModal}>{requestDetail}</Modal>
+          </ModalLayout>
+          <ModalLayout visible={this.state.DetailModal}>
+            {requestDetail}
+          </ModalLayout>
         </View>
+        <Spinner visible={this.state.ShowSpinner}></Spinner>
       </View>
     );
   }
+
+  ShowSpinner = () => {
+    this.setState({ ShowSpinner: true });
+  };
+  HideSpinner = () => {
+    this.setState({ ShowSpinner: false });
+  };
 }
 
 const styles = StyleSheet.create({

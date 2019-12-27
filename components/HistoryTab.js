@@ -6,15 +6,16 @@ import {
   StyleSheet,
   ScrollView,
   TouchableHighlight,
-  Alert
+  Alert,
+  RefreshControl
 } from "react-native";
-import Modal from "react-native-modal";
+import ModalLayout from "./ModalLayout";
 import Styles from "./Styles";
 import { RadioButton, Button } from "react-native-paper";
 import History from "./History";
 import HistoryItemDetail from "./HistoryItemDetail";
-import Preloader from "./Preloader";
 import { FetchData } from "./services/FetchData";
+import Spinner from "./Spinner";
 
 class HistoryTab extends Component {
   static navigationOptions = {
@@ -26,7 +27,8 @@ class HistoryTab extends Component {
     itemFilterText: "all",
     History: null,
     modalVisible: false,
-    url: ""
+    url: "",
+    ShowSpinner: false
   };
   openModel = (id, type) => {
     //console.log("DATA TO SHOWN", id, type);
@@ -39,24 +41,26 @@ class HistoryTab extends Component {
     this.getHistory();
   }
   getHistory = () => {
+    this.ShowSpinner();
     this.setState({ refreshing: true });
     FetchData("history")
       .then(result => {
         this.setState({ History: result });
         this.setState({ refreshing: false });
+        this.HideSpinner();
       })
       .catch(errorMessage => {
         console.log(errorMessage);
         this.setState({ refreshing: false });
+        this.HideSpinner();
       });
   };
   _onRefresh = () => {
-    console.log("_onRefresh()");
     this.getHistory();
   };
   render() {
     if (!this.state.History) {
-      return <Preloader></Preloader>;
+      return <Spinner visible={this.state.ShowSpinner}></Spinner>;
     }
     //console.log(this.state.History);
     let filteredData = this.state.History.filter(element => {
@@ -142,48 +146,52 @@ class HistoryTab extends Component {
           </Text>
         </View>
 
-        <ScrollView style={{ marginBottom: 100 }}>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh}
+            ></RefreshControl>
+          }
+          style={{ marginBottom: 100 }}
+        >
           <View>{filteredData}</View>
         </ScrollView>
 
         <View>
-          <Modal
-            visible={this.state.modalVisible}
-            onRequestClose={this._hideModal}
-          >
+          <ModalLayout visible={this.state.modalVisible}>
+            <Text style={{ marginBottom: 10, fontSize: 20 }}>Details</Text>
+            <HistoryItemDetail url={this.state.url}></HistoryItemDetail>
             <View
               style={{
-                backgroundColor: "gray",
-                padding: 30,
-                borderRadius: 10,
-                height: "auto"
+                flexDirection: "row",
+                justifyContent: "flex-end",
+                marginTop: 20
               }}
             >
-              <Text style={{ marginBottom: 10, fontSize: 20 }}>Details</Text>
-              <HistoryItemDetail url={this.state.url}></HistoryItemDetail>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "flex-end",
-                  marginTop: 20
+              <Button
+                style={[Styles.BackgroundColor, { marginLeft: 20 }]}
+                mode="contained"
+                onPress={() => {
+                  this.setState({ modalVisible: false });
                 }}
               >
-                <Button
-                  style={[Styles.BackgroundColor, { marginLeft: 20 }]}
-                  mode="contained"
-                  onPress={() => {
-                    this.setState({ modalVisible: false });
-                  }}
-                >
-                  Ok
-                </Button>
-              </View>
+                Ok
+              </Button>
             </View>
-          </Modal>
+          </ModalLayout>
         </View>
+        <Spinner visible={this.state.ShowSpinner}></Spinner>
       </View>
     );
   }
+
+  ShowSpinner = () => {
+    this.setState({ ShowSpinner: true });
+  };
+  HideSpinner = () => {
+    this.setState({ ShowSpinner: false });
+  };
 }
 
 const styles = StyleSheet.create({
@@ -194,42 +202,3 @@ const styles = StyleSheet.create({
 });
 
 export default HistoryTab;
-{
-  /* <Modal
-          style={{ width: "80%", height: "50%" }}
-          animationType="slide"
-          transparent={true}
-          visible={this.state.modalVisible}
-          onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
-          }}
-        >
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: "rgba(0,0,0,0.5)"
-            }}
-          >
-            <View
-              style={{
-                width: 300,
-                height: 300,
-                backgroundColor: "white"
-              }}
-            >
-              <Text>Hello World!</Text>
-              <TouchableHighlight
-                onPress={() => {
-                  this.setState({ modalVisible: false });
-                }}
-              >
-                <Text>Hide Modal</Text>
-              </TouchableHighlight>
-            </View>
-          </View>
-        </Modal>
-       */
-}

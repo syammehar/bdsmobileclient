@@ -5,7 +5,7 @@ import Notification from "./Notification";
 import Styles from "./Styles";
 import { FetchData } from "./services/FetchData";
 import timeDifference from "./services/TimeService";
-import Preloader from "./Preloader";
+import Spinner from "./Spinner";
 
 export default class NotificationsTab extends Component {
   static navigationOptions = {
@@ -23,13 +23,8 @@ export default class NotificationsTab extends Component {
       3: "#e2e3e5"
     },
     refreshing: false,
-    Notifications: null
-    // iconClass: {
-    //   1: " fa-question",
-    //   2: " fa-check",
-    //   3: " fa-check-double"
-    // },
-    // modal: false
+    Notifications: null,
+    ShowSpinner: false
   };
 
   componentDidMount() {
@@ -37,14 +32,17 @@ export default class NotificationsTab extends Component {
   }
   getNotifications = () => {
     this.setState({ refreshing: true });
+    this.ShowSpinner();
     FetchData("notifications")
       .then(result => {
         this.setState({ Notifications: result });
         this.setState({ refreshing: false });
+        this.HideSpinner();
       })
       .catch(errorMessage => {
         console.log(errorMessage);
         this.setState({ refreshing: false });
+        this.HideSpinner();
       });
   };
   _onRefresh = () => {
@@ -52,7 +50,7 @@ export default class NotificationsTab extends Component {
   };
   render() {
     if (!this.state.Notifications) {
-      return <Preloader></Preloader>;
+      return <Spinner visible={this.state.ShowSpinner}></Spinner>;
     }
     let Notifications = this.state.Notifications.map((notification, index) => {
       return (
@@ -81,7 +79,15 @@ export default class NotificationsTab extends Component {
         >
           <View>{Notifications}</View>
         </ScrollView>
+        <Spinner visible={this.state.ShowSpinner}></Spinner>
       </View>
     );
   }
+
+  ShowSpinner = () => {
+    this.setState({ ShowSpinner: true });
+  };
+  HideSpinner = () => {
+    this.setState({ ShowSpinner: false });
+  };
 }

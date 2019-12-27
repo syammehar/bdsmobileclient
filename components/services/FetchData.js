@@ -1,7 +1,7 @@
 import { ApiUrl } from "./Constants";
 import { AsyncStorage } from "react-native";
 
-export async function FetchData(path) {
+export async function FetchData(path, sDelay = 1000, fDelay = 500) {
   const url = ApiUrl + path;
   console.log(url);
   let fetchData = {
@@ -17,11 +17,15 @@ export async function FetchData(path) {
         throw new Error("Something went wrong Error: " + res.status);
       })
       .then(function(data) {
-        //if (data.error) throw new Error(data.error_description);
-        resolve(data);
+        if (data.error) throw new Error(data.error_description);
+        setTimeout(() => {
+          resolve(data);
+        }, sDelay);
       })
       .catch(error => {
-        reject(error.message);
+        setTimeout(() => {
+          reject(error.message);
+        }, fDelay);
       });
   });
 }
