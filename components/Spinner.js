@@ -17,7 +17,7 @@ export default class Spinner extends Component {
         <View style={styles.container}>
           <View
             style={{
-              backgroundColor: "rgba(52, 52, 52, 0.4)",
+              backgroundColor: "rgb(255,255,255)",
               padding: 10,
               borderRadius: 10,
               flexDirection: "row"
