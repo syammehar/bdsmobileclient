@@ -51,7 +51,8 @@ class ProfileTab extends Component {
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       base64: true,
-      aspect: [1, 1]
+      aspect: [1, 1],
+      quality: 0.1
     });
 
     if (!result.cancelled) {
