@@ -12,14 +12,14 @@ export async function FetchData(path, sDelay = 1000, fDelay = 500) {
   return new Promise((resolve, reject) => {
     fetch(url, fetchData)
       .then(res => {
-        if (res.status === 200 || res.status === 400) return res.json();
+        if (res.status === 200) return res.json();
 
         throw new Error("Something went wrong Error: " + res.status);
       })
-      .then(function(data) {
-        if (data.error) throw new Error(data.error_description);
+      .then(function(resp) {
+        if (resp.Code > 0 && resp.Code <= 50) throw new Error(resp.Message);
         setTimeout(() => {
-          resolve(data);
+          resolve(resp);
         }, sDelay);
       })
       .catch(error => {

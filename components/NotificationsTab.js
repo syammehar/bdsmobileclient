@@ -34,13 +34,12 @@ export default class NotificationsTab extends Component {
     this.setState({ refreshing: true });
     this.ShowSpinner();
     FetchData("notifications")
-      .then(result => {
-        this.setState({ Notifications: result });
+      .then(resp => {
+        this.setState({ Notifications: resp.Data });
         this.setState({ refreshing: false });
         this.HideSpinner();
       })
       .catch(errorMessage => {
-        console.log(errorMessage);
         this.setState({ refreshing: false });
         this.HideSpinner();
       });
@@ -60,6 +59,7 @@ export default class NotificationsTab extends Component {
           title={notification.Title}
           description={notification.Body}
           notificationTime={timeDifference(notification.Time)}
+          notif={notification}
         />
       );
     });

@@ -44,8 +44,8 @@ class HistoryTab extends Component {
     this.ShowSpinner();
     this.setState({ refreshing: true });
     FetchData("history")
-      .then(result => {
-        this.setState({ History: result });
+      .then(resp => {
+        this.setState({ History: resp.Data });
         this.setState({ refreshing: false });
         this.HideSpinner();
       })

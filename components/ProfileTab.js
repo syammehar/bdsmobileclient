@@ -34,11 +34,11 @@ class ProfileTab extends Component {
   };
   componentDidMount() {
     FetchData("profile")
-      .then(result => {
-        this.setState({ Profile: result });
+      .then(resp => {
+        this.setState({ Profile: resp.Data });
         FetchData("DownloadProfilePhoto", 500)
-          .then(result => {
-            this.setState({ ProfilePhoto: result.PhotoData });
+          .then(resp1 => {
+            this.setState({ ProfilePhoto: resp1.Data.PhotoData });
           })
           .catch(errorMessage => {
             console.log(errorMessage);
@@ -60,8 +60,8 @@ class ProfileTab extends Component {
         ProfilePhoto: "data:image/jpeg;base64," + result.base64
       });
       PostData("UploadPhoto", { PhotoData: this.state.ProfilePhoto }, 3000)
-        .then(result => {
-          alert("Photo updated successfully");
+        .then(resp => {
+          alert(resp.Message);
         })
         .catch(errorMessage => {
           alert(errorMessage);

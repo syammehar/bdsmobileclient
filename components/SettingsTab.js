@@ -47,9 +47,10 @@ class SettingsTab extends Component {
     }
     this.ShowSpinner();
     PostData("ProfileUpdate", this.state)
-      .then(data => {
+      .then(resp => {
+        let data = resp.Data;
         this.HideSpinner();
-        alert("Credentials Updated Successfully...");
+        alert(resp.Message);
         this.setState({ ...data, modalVisible: false });
       })
       .catch(errorMessage => {
@@ -59,7 +60,8 @@ class SettingsTab extends Component {
   };
   componentDidMount() {
     FetchData("ProfileUpdate")
-      .then(result => {
+      .then(resp => {
+        let result = resp.Data;
         this.setState(result);
       })
       .catch(errorMessage => {});

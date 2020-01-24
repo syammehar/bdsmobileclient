@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text } from "react-native";
+import { View, Text, Button } from "react-native";
 import { Title, Paragraph, Card } from "react-native-paper";
 
 class Notification extends Component {
@@ -27,6 +27,13 @@ class Notification extends Component {
             <Paragraph style={{ fontSize: 13 }}>
               {this.props.description}
             </Paragraph>
+            {!this.props.notif.Confirmed ? (
+              <Button onPress={() => alert("alert")} mode="contained">
+                Confirm received
+              </Button>
+            ) : (
+              <View />
+            )}
           </Card.Content>
         </Card>
       </View>

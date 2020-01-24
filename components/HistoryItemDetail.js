@@ -24,8 +24,8 @@ class HistoryItemDetail extends Component {
   }
   LoadData = () => {
     FetchData(this.props.url)
-      .then(result => {
-        this.setState({ Details: result });
+      .then(resp => {
+        this.setState({ Details: resp.Data });
       })
       .catch(errorMessage => {
         console.log(errorMessage);

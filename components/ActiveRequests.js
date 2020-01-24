@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-import { Card, Title, Paragraph,Button, TouchableHighlight } from "react-native-paper";
+import {
+  Card,
+  Title,
+  Paragraph,
+  Button,
+  TouchableHighlight
+} from "react-native-paper";
 import { Text, ScrollView, View } from "react-native";
 import timeDifference from "./services/TimeService";
 import { FetchData } from "./services/FetchData";
@@ -12,23 +18,21 @@ class ActiveRequests extends Component {
   };
   componentDidMount() {
     FetchData("requests")
-      .then(result => {
-        this.setState({ requestData: result });
+      .then(resp => {
+        this.setState({ requestData: resp.Data });
       })
       .catch(errorMessage => {
         console.log(errorMessage);
       });
   }
   render() {
-    
     if (this.state.requestData) {
-      
       let requestData = this.state.requestData.map((req, index) => {
         return (
           <View style={{ margin: 5 }} key={index}>
             <Card
               style={{ elevation: 5 }}
-               onPress={() => this.props.OpenDetailModel(req.ID)}
+              onPress={() => this.props.OpenDetailModel(req.ID)}
             >
               <Card.Content style={{ backgroundColor: "white" }}>
                 <View

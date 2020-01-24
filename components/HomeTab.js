@@ -35,9 +35,9 @@ export default class HomeTab extends Component {
   OpenDetailModel = id => {
     this.ShowSpinner();
     FetchData("Requests/d?id=" + id)
-      .then(result => {
+      .then(resp => {
         this.setState({
-          RequestDetail: result,
+          RequestDetail: resp.Data,
           RequestID: id,
           DetailModal: true
         });
@@ -45,16 +45,15 @@ export default class HomeTab extends Component {
       })
       .catch(errorMessage => {
         this.HideSpinner();
-        console.log(errorMessage);
       });
   };
   AcceptConfirmed = () => {
     let data = { RequestID: this.state.RequestID };
     this.ShowSpinner();
     PostData("Accepts", data)
-      .then(data => {
+      .then(resp => {
         this.HideSpinner();
-        alert(data.message);
+        alert(resp.Message);
         this.setState({ DetailModal: false, modalVisible: false });
       })
       .catch(errorMessage => {
@@ -64,9 +63,9 @@ export default class HomeTab extends Component {
   sendRequest = () => {
     this.ShowSpinner();
     PostData("requests", this.state)
-      .then(data => {
+      .then(resp => {
         this.HideSpinner();
-        alert(data.message);
+        alert(resp.Message);
         this.setState({
           BloodGroup: 0,
           Location: "",

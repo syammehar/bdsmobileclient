@@ -6,7 +6,7 @@ import Styles from "./Styles";
 import Spinner from "./Spinner";
 class LoginScreen extends Component {
   state = {
-    username: "map@g.c",
+    username: "map1@g.cm",
     password: "123456",
     redirectToHome: false,
     ShowSpinner: false
