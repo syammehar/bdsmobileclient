@@ -1,8 +1,8 @@
-import { ApiUrl } from "./Constants";
+//import { ApiUrl } from "./Constants";
 import { AsyncStorage } from "react-native";
 
 export async function PostData(path, data, sDelay = 1000, fDelay = 500) {
-  const url = ApiUrl + path;
+  const url = (await AsyncStorage.getItem("ApiUrl")) + path;
   console.log(url);
   let fetchData = {
     method: "POST",
@@ -28,6 +28,7 @@ export async function PostData(path, data, sDelay = 1000, fDelay = 500) {
         }, sDelay);
       })
       .catch(error => {
+        console.log(error);
         setTimeout(() => {
           reject(error.message);
         }, fDelay);

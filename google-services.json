@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1084275100684",
+    "firebase_url": "https://bds-fuuast.firebaseio.com",
+    "project_id": "bds-fuuast",
+    "storage_bucket": "bds-fuuast.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1084275100684:android:882fefc9ef161af0c77229",
+        "android_client_info": {
+          "package_name": "com.fuuast.bds"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1084275100684-8pj5n3v95iigig4lke7l04tbbkbvc9i6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5EWnad7FeXrOFNgVcRe2dPlf0zT_8TO4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1084275100684-8pj5n3v95iigig4lke7l04tbbkbvc9i6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

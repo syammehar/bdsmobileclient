@@ -13,6 +13,10 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "android": {
+      "package": "com.fuuast.bds",
+      "googleServicesFile": "./google-services.json"
+    },
     "updates": {
       "fallbackToCacheTimeout": 0
     },

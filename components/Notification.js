@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { View, Text, Button } from "react-native";
-import { Title, Paragraph, Card } from "react-native-paper";
+import { View, Text } from "react-native";
+import { Title, Paragraph, Card, Button } from "react-native-paper";
 
 class Notification extends Component {
   state = {};
@@ -27,18 +27,24 @@ class Notification extends Component {
             <Paragraph style={{ fontSize: 13 }}>
               {this.props.description}
             </Paragraph>
-            {!this.props.notif.Confirmed ? (
-              <Button onPress={() => alert("alert")} mode="contained">
-                Confirm received
-              </Button>
-            ) : (
-              <View />
-            )}
+            {this.props.notif.Activity === 2 &&
+              this.ConfirmButton(
+                this.props.notif.Confirmed,
+                this.props.notif.ID
+              )}
           </Card.Content>
         </Card>
       </View>
     );
   }
+  ConfirmButton = (confirmed, id) => {
+    if (confirmed) return null;
+    return (
+      <Button onPress={() => this.props.ConfirmReceived(id)}>
+        Confirm Blood received
+      </Button>
+    );
+  };
 }
 
 export default Notification;

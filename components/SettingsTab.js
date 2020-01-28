@@ -39,11 +39,12 @@ class SettingsTab extends Component {
         OldPassword.length < 6
       ) {
         alert("Password must have at least 6 characters");
+        return;
       }
       if (RepeatPassword !== NewPassword) {
         alert("New password and repeat password must match");
+        return;
       }
-      return;
     }
     this.ShowSpinner();
     PostData("ProfileUpdate", this.state)
@@ -150,7 +151,7 @@ class SettingsTab extends Component {
               Save
             </Button>
             <Button
-              style={{ marginLeft: 20, backgroundColor: "yellow" }}
+              style={{ marginLeft: 20, backgroundColor: "orange" }}
               mode="contained"
               onPress={() => {
                 this.setState({ modalVisible: false });

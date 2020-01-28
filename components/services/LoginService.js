@@ -1,8 +1,8 @@
-import { TokenUrl } from "./Constants";
+//import { TokenUrl } from "./Constants";
 import { AsyncStorage } from "react-native";
 import { RegisterNotificationToken } from "./RegisterNotificationToken";
-export function LoginService(data) {
-  const url = TokenUrl;
+export async function LoginService(data) {
+  const url = await AsyncStorage.getItem("TokenUrl");
   data = {
     username: data.username,
     password: data.password,
@@ -42,7 +42,9 @@ export function LoginService(data) {
           this._storeData("access_token", data.access_token);
           this._storeData("expires_in", data.expires_in);
           this._storeData("token_type", data.token_type);
-          RegisterNotificationToken();
+          if (!data.has_notif_token) {
+            RegisterNotificationToken();
+          }
           setTimeout(() => {
             resolve(true);
           }, 500);

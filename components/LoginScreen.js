@@ -25,9 +25,9 @@ class LoginScreen extends Component {
         alert(errorMessage);
       });
   };
-  // componentDidMount() {
-  //   //this.handleLogin();
-  // }
+  componentDidMount() {
+    //this.handleLogin();
+  }
   render() {
     return (
       <View style={styles.container}>
