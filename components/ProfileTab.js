@@ -11,6 +11,7 @@ import { List, TextInput, Button } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import { FetchData } from "./services/FetchData";
 import { PostData } from "./services/PostData";
+import Spinner from "./Spinner";
 
 class ProfileTab extends Component {
   static navigationOptions = {
@@ -30,19 +31,20 @@ class ProfileTab extends Component {
     columnName: "",
     columnValue: "",
     image: null,
-    ProfilePhoto: ""
+    ProfilePhoto: "",
+    ShowSpinner: false
   };
   componentDidMount() {
+    this.ShowSpinner();
     FetchData("profile")
       .then(resp => {
         this.setState({ Profile: resp.Data });
         FetchData("DownloadProfilePhoto", 500)
           .then(resp1 => {
             this.setState({ ProfilePhoto: resp1.Data.PhotoData });
+            this.HideSpinner();
           })
-          .catch(errorMessage => {
-            console.log(errorMessage);
-          });
+          .catch(errorMessage => {});
       })
       .catch(errorMessage => {});
   }
@@ -70,85 +72,95 @@ class ProfileTab extends Component {
   };
   render() {
     return (
-      <ScrollView>
-        <Text style={[Styles.title, Styles.BackgroundColor]}>Profile</Text>
-        <View
-          style={{
-            alignItems: "center",
-            justifyContent: "center",
-            marginTop: 30,
-            flexDirection: "row"
-          }}
-        >
-          {this.state.ProfilePhoto != "" &&
-          this.state.ProfilePhoto.startsWith("data:image/") ? (
-            <Image
-              source={{ uri: this.state.ProfilePhoto }}
-              style={{ width: 150, height: 150, borderRadius: 75 }}
-            />
-          ) : (
-            <Image
-              source={require("../profile.png")}
-              style={{ width: 150, height: 150, borderRadius: 75 }}
-            />
-          )}
+      <View>
+        <ScrollView>
+          <Text style={[Styles.title, Styles.BackgroundColor]}>Profile</Text>
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              marginTop: 30,
+              flexDirection: "row"
+            }}
+          >
+            {this.state.ProfilePhoto != "" &&
+            this.state.ProfilePhoto.startsWith("data:image/") ? (
+              <Image
+                source={{ uri: this.state.ProfilePhoto }}
+                style={{ width: 150, height: 150, borderRadius: 75 }}
+              />
+            ) : (
+              <Image
+                source={require("../profile.png")}
+                style={{ width: 150, height: 150, borderRadius: 75 }}
+              />
+            )}
 
-          <Ionicons
-            name="ios-camera"
-            onPress={this.updateProfilePicture}
-            size={25}
-            style={[styles.camera, Styles.BackgroundColor]}
-          />
-        </View>
-        <View style={{ padding: 30 }}>
-          <List.Item
-            title="Name"
-            description={this.state.Profile.FullName}
-            left={() => (
-              <Entypo
-                name="user"
-                size={35}
-                style={{ marginTop: 10, ...Styles.Color }}
-              />
-            )}
-          />
-          <List.Item
-            title="Department"
-            description={this.state.Profile.Department}
-            left={() => (
-              <FontAwesome5
-                name="university"
-                size={35}
-                style={{ marginTop: 10, ...Styles.Color }}
-              />
-            )}
-          />
-          <List.Item
-            title="Contact"
-            description={this.state.Profile.Contact}
-            left={() => (
-              <MaterialIcons
-                name="phone"
-                size={35}
-                style={{ marginTop: 10, ...Styles.Color }}
-              />
-            )}
-          />
-          <List.Item
-            title="Blood Group"
-            description={this.state.Profile.BloodGroup}
-            left={() => (
-              <Entypo
-                name="drop"
-                size={35}
-                style={{ marginTop: 10, ...Styles.Color }}
-              />
-            )}
-          />
-        </View>
-      </ScrollView>
+            <Ionicons
+              name="ios-camera"
+              onPress={this.updateProfilePicture}
+              size={25}
+              style={[styles.camera, Styles.BackgroundColor]}
+            />
+          </View>
+          <View style={{ padding: 30 }}>
+            <List.Item
+              title="Name"
+              description={this.state.Profile.FullName}
+              left={() => (
+                <Entypo
+                  name="user"
+                  size={35}
+                  style={{ marginTop: 10, ...Styles.Color }}
+                />
+              )}
+            />
+            <List.Item
+              title="Department"
+              description={this.state.Profile.Department}
+              left={() => (
+                <FontAwesome5
+                  name="university"
+                  size={35}
+                  style={{ marginTop: 10, ...Styles.Color }}
+                />
+              )}
+            />
+            <List.Item
+              title="Contact"
+              description={this.state.Profile.Contact}
+              left={() => (
+                <MaterialIcons
+                  name="phone"
+                  size={35}
+                  style={{ marginTop: 10, ...Styles.Color }}
+                />
+              )}
+            />
+            <List.Item
+              title="Blood Group"
+              description={this.state.Profile.BloodGroup}
+              left={() => (
+                <Entypo
+                  name="drop"
+                  size={35}
+                  style={{ marginTop: 10, ...Styles.Color }}
+                />
+              )}
+            />
+          </View>
+        </ScrollView>
+        <Spinner visible={this.state.ShowSpinner}></Spinner>
+      </View>
     );
   }
+
+  ShowSpinner = () => {
+    this.setState({ ShowSpinner: true });
+  };
+  HideSpinner = () => {
+    this.setState({ ShowSpinner: false });
+  };
 }
 
 const styles = StyleSheet.create({

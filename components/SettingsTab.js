@@ -3,6 +3,7 @@ import { View, Text, Image, ScrollView, StyleSheet } from "react-native";
 import { Ionicons, Octicons, Entypo } from "@expo/vector-icons";
 import ModalLayout from "./ModalLayout";
 import { List, TextInput, Button } from "react-native-paper";
+import { AsyncStorage } from "react-native";
 import Styles from "./Styles";
 import { PostData } from "./services/PostData.js";
 import { FetchData } from "./services/FetchData";
@@ -20,6 +21,7 @@ class SettingsTab extends Component {
     Contact: "",
     Email: "",
     modalVisible: false,
+    modalVisibleLogout: false,
     ShowSpinner: false
   };
   PerformUpdate = () => {
@@ -59,6 +61,12 @@ class SettingsTab extends Component {
         alert(errorMessage);
       });
   };
+  ContinueLogout = () => {
+    this.props.Logout();
+    return;
+    // await AsyncStorage.removeItem("access_token");
+    // alert("loged out");
+  };
   componentDidMount() {
     FetchData("ProfileUpdate")
       .then(resp => {
@@ -78,11 +86,18 @@ class SettingsTab extends Component {
             left={() => <Octicons name="key" size={26} style={styles.icon} />}
             onPress={() => this.setState({ modalVisible: true })}
           />
-          <List.Item
+          {/* <List.Item
             title="Privacy"
             description="Status"
             left={() => <Entypo name="shield" size={26} style={styles.icon} />}
-          />
+          /> */}
+          {/* <List.Item
+            title="Log out"
+            left={() => (
+              <Entypo name="circle-with-minus" size={26} style={styles.icon} />
+            )}
+            onPress={() => this.setState({ modalVisibleLogout: true })}
+          /> */}
         </View>
         <ModalLayout visible={this.state.modalVisible}>
           <Text style={{ marginBottom: 10, fontSize: 20 }}>
@@ -90,7 +105,7 @@ class SettingsTab extends Component {
           </Text>
 
           <ScrollView style={{ marginBottom: 10, maxHeight: "80%" }}>
-            <View>
+            <View style={{ marginRight: 8, marginLeft: 8 }}>
               <TextInput
                 maxLength={100}
                 secureTextEntry={true}
@@ -161,6 +176,38 @@ class SettingsTab extends Component {
             </Button>
           </View>
         </ModalLayout>
+        {/* <ModalLayout visible={this.state.modalVisibleLogout}>
+          <Text style={{ marginBottom: 10, fontSize: 20 }}>Logout</Text>
+
+          <Text style={{ marginBottom: 10, marginTop: 10, fontSize: 16 }}>
+            Are you sure you want to logout?
+          </Text>
+
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "flex-end",
+              marginTop: 5
+            }}
+          >
+            <Button
+              style={[Styles.BackgroundColor, { marginLeft: 20 }]}
+              mode="contained"
+              onPress={this.ContinueLogout}
+            >
+              Yes
+            </Button>
+            <Button
+              style={{ marginLeft: 20, backgroundColor: "orange" }}
+              mode="contained"
+              onPress={() => {
+                this.setState({ modalVisibleLogout: false });
+              }}
+            >
+              Cancel
+            </Button>
+          </View>
+        </ModalLayout> */}
         <Spinner visible={this.state.ShowSpinner}></Spinner>
       </View>
     );

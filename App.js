@@ -22,27 +22,44 @@ const StackNavigator = createStackNavigator({
     }
   }
 });
+const LoggedInStackNavigator = createStackNavigator({
+  DefaultHome: {
+    screen: Home,
+    navigationOptions: {
+      header: null
+    }
+  }
+});
 const AppContainer = createAppContainer(StackNavigator);
+const LoggedInAppContainer = createAppContainer(LoggedInStackNavigator);
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    GetURL();
   }
   state = {
-    isReady: false
+    isReady: false,
+    LoggedIn: false
+  };
+  checkLogedIn = async () => {
+    let token = await AsyncStorage.getItem("access_token");
+    if (token && token.length > 16) {
+      this.setState({ isReady: true, LoggedIn: true });
+      return;
+    }
+    this.setState({ isReady: true, LoggedIn: false });
   };
   render() {
     if (!this.state.isReady) {
       return (
         <AppLoading
           startAsync={this._cacheSettings}
-          onFinish={() => this.setState({ isReady: true })}
+          onFinish={this.checkLogedIn}
           onError={console.warn}
         />
       );
     }
-    return <AppContainer />;
+    return this.state.LoggedIn ? <LoggedInAppContainer /> : <AppContainer />;
   }
 
   _cacheSettings() {
