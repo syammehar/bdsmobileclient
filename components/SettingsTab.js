@@ -10,10 +10,10 @@ import { FetchData } from "./services/FetchData";
 import Spinner from "./Spinner";
 
 class SettingsTab extends Component {
-  static navigationOptions = {
-    drawerLabel: "Settings",
-    drawerIcon: <Ionicons name="md-settings" size={26} />
-  };
+  // static navigationOptions = {
+  //   drawerLabel: "Settings",
+  //   drawerIcon: <Ionicons name="md-settings" size={26} />
+  // };
   state = {
     OldPassword: "",
     NewPassword: "",
@@ -61,11 +61,9 @@ class SettingsTab extends Component {
         alert(errorMessage);
       });
   };
-  ContinueLogout = () => {
+  ContinueLogout = async () => {
+    await AsyncStorage.removeItem("access_token");
     this.props.Logout();
-    return;
-    // await AsyncStorage.removeItem("access_token");
-    // alert("loged out");
   };
   componentDidMount() {
     FetchData("ProfileUpdate")
@@ -91,13 +89,13 @@ class SettingsTab extends Component {
             description="Status"
             left={() => <Entypo name="shield" size={26} style={styles.icon} />}
           /> */}
-          {/* <List.Item
+          <List.Item
             title="Log out"
             left={() => (
               <Entypo name="circle-with-minus" size={26} style={styles.icon} />
             )}
             onPress={() => this.setState({ modalVisibleLogout: true })}
-          /> */}
+          />
         </View>
         <ModalLayout visible={this.state.modalVisible}>
           <Text style={{ marginBottom: 10, fontSize: 20 }}>
@@ -176,7 +174,7 @@ class SettingsTab extends Component {
             </Button>
           </View>
         </ModalLayout>
-        {/* <ModalLayout visible={this.state.modalVisibleLogout}>
+        <ModalLayout visible={this.state.modalVisibleLogout}>
           <Text style={{ marginBottom: 10, fontSize: 20 }}>Logout</Text>
 
           <Text style={{ marginBottom: 10, marginTop: 10, fontSize: 16 }}>
@@ -207,7 +205,7 @@ class SettingsTab extends Component {
               Cancel
             </Button>
           </View>
-        </ModalLayout> */}
+        </ModalLayout>
         <Spinner visible={this.state.ShowSpinner}></Spinner>
       </View>
     );

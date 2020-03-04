@@ -18,7 +18,14 @@ const DrawerNavigator = createDrawerNavigator({
   History: HistoryTab,
   Notifications: NotificationsTab,
   Profile: ProfileTab,
-  Settings: SettingsTab
+  //Settings: SettingsTab
+  Settings: {
+    screen: param => <SettingsTab Logout={() => param.screenProps.Logout()} />,
+    navigationOptions: {
+      drawerLabel: "Settings",
+      drawerIcon: <Ionicons name="md-settings" size={26} />
+    }
+  }
 });
 const StackNavigator = createStackNavigator(
   {
@@ -53,6 +60,8 @@ const HomeContainer = createAppContainer(StackNavigator);
 
 export default class Home extends React.Component {
   render() {
-    return <HomeContainer />;
+    return (
+      <HomeContainer screenProps={{ Logout: () => this.props.Logout() }} />
+    );
   }
 }

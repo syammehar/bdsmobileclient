@@ -8,23 +8,44 @@ import GetURL from "./components/services/URLService";
 import { AppLoading } from "expo";
 import { AsyncStorage } from "react-native";
 
-const StackNavigator = createStackNavigator({
-  LoginScreen: {
-    screen: LoginScreen,
-    navigationOptions: {
-      header: null
+const StackNavigator = createStackNavigator(
+  {
+    LoginScreen: {
+      screen: LoginScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    DefaultHome: {
+      // screen: Home,
+      screen: screenProps => (
+        <Home
+          Logout={() => {
+            screenProps.screenProps.Logout();
+          }}
+          //Logedout={screenProps.screenProps.Logedout}
+        />
+      ),
+      navigationOptions: {
+        header: null
+      }
     }
   },
-  DefaultHome: {
-    screen: Home,
-    navigationOptions: {
-      header: null
-    }
+  {
+    initialRouteName: "LoginScreen"
   }
-});
+);
 const LoggedInStackNavigator = createStackNavigator({
   DefaultHome: {
-    screen: Home,
+    // screen: Home,
+    screen: screenProps => (
+      <Home
+        Logout={() => {
+          screenProps.screenProps.Logout();
+        }}
+        //Logedout={screenProps.screenProps.Logedout}
+      />
+    ),
     navigationOptions: {
       header: null
     }
@@ -40,6 +61,9 @@ export default class App extends React.Component {
   state = {
     isReady: false,
     LoggedIn: false
+  };
+  Logout = async () => {
+    await this.checkLogedIn();
   };
   checkLogedIn = async () => {
     let token = await AsyncStorage.getItem("access_token");
@@ -59,7 +83,28 @@ export default class App extends React.Component {
         />
       );
     }
-    return this.state.LoggedIn ? <LoggedInAppContainer /> : <AppContainer />;
+    if (this.state.LoggedIn) {
+      return (
+        <LoggedInAppContainer
+          screenProps={{
+            Logout: () => {
+              this.Logout();
+            }
+            //Logedout: !this.state.LoggedIn
+          }}
+        />
+      );
+    }
+    return (
+      <AppContainer
+        screenProps={{
+          Logout: () => {
+            this.Logout();
+          }
+          //Logedout: !this.state.LoggedIn
+        }}
+      />
+    );
   }
 
   _cacheSettings() {
